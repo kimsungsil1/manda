@@ -1,123 +1,86 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mandarat Chart with Synchronized Goals</title>
+    <title>만다라트</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f4;
+            flex-wrap: wrap;
+            width: 900px;
+            margin: 0 auto;
         }
-        .mandarat-container {
+        .mandalart {
             display: grid;
-            grid-template-columns: repeat(9, 1fr);
-            grid-gap: 1px;
-            background-color: #000;
-            width: 90%;
-            max-width: 600px;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            border: 1px solid #000;
+            margin: -1px;
         }
-        .mandarat-cell {
-            background-color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid #ddd;
-            font-size: 14px;
-            text-align: center;
-            padding: 5px;
-            word-wrap: break-word;
-            aspect-ratio: 1;
-            overflow: hidden;
-        }
-        .mandarat-cell.main {
-            background-color: yellow;
-            font-weight: bold;
-        }
-        .mandarat-cell.sub {
-            background-color: #e0e0e0;
-        }
-        .mandarat-cell div {
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            font-size: 14px;
-            font-family: inherit;
-            overflow: hidden;
-            outline: none;
-            resize: none;
+        .mandalart input {
+            width: 100px;
+            height: 100px;
+            border: 1px solid #000;
             box-sizing: border-box;
+            text-align: center;
+            font-size: 14px;
         }
-        .mandarat-cell div[contenteditable] {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .main-goal {
+            background-color: yellow;
+        }
+        .sub-goal {
+            background-color: lightgray;
         }
     </style>
 </head>
 <body>
-    <div class="mandarat-container" id="mandarat">
-        <!-- 9x9 Grid Cells -->
-        <!-- JavaScript will dynamically generate the cells -->
+
+    <!-- 중앙 만다라트 -->
+    <div class="mandalart" id="center-mandalart">
+        <!-- 각 칸 생성 -->
+        <input type="text" class="sub-goal" data-index="0">
+        <input type="text" class="sub-goal" data-index="1">
+        <input type="text" class="sub-goal" data-index="2">
+        <input type="text" class="sub-goal" data-index="3">
+        <input type="text" class="main-goal" id="main-goal">
+        <input type="text" class="sub-goal" data-index="4">
+        <input type="text" class="sub-goal" data-index="5">
+        <input type="text" class="sub-goal" data-index="6">
+        <input type="text" class="sub-goal" data-index="7">
+    </div>
+
+    <!-- 주변 8개의 만다라트 -->
+    <div id="sub-mandalarts">
+        <!-- 여기서 JavaScript로 만다라트를 생성합니다 -->
     </div>
 
     <script>
-        // Generate Mandarat Chart
-        const mandarat = document.getElementById("mandarat");
+        // 중앙 만다라트의 서브 목표를 주변 만다라트에 복사
+        const subGoals = document.querySelectorAll('#center-mandalart .sub-goal');
+        const subMandalartsContainer = document.getElementById('sub-mandalarts');
 
-        // 동일한 위치의 셀들을 그룹화하기 위한 객체
-        const subGoalGroups = {};
+        subGoals.forEach((subGoal, index) => {
+            // 각 서브 만다라트 생성
+            const mandalart = document.createElement('div');
+            mandalart.className = 'mandalart';
+            mandalart.dataset.index = index;
 
-        // 9x9 그리드를 생성하고 그룹을 초기화
-        for (let row = 0; row < 9; row++) {
-            for (let col = 0; col < 9; col++) {
-                const cell = document.createElement("div");
-                cell.classList.add("mandarat-cell");
-
-                // Add editable div for better text wrapping and resizing
-                const contentDiv = document.createElement("div");
-                contentDiv.contentEditable = "true";
-                contentDiv.textContent = ""; // 기본 텍스트 제거
-                cell.appendChild(contentDiv);
-
-                // Apply specific styles for main and sub areas
-                if (row === 4 && col === 4) {
-                    cell.classList.add("main"); // 중앙 목표 셀
-                } else if (
-                    (row === 3 || row === 4 || row === 5) &&
-                    (col === 3 || col === 4 || col === 5) &&
-                    !(row === 4 && col === 4)
-                ) {
-                    cell.classList.add("sub"); // 주변 서브 목표
+            // 9칸 생성
+            for (let i = 0; i < 9; i++) {
+                const input = document.createElement('input');
+                input.type = 'text';
+                // 중앙 칸에만 회색 배경 적용
+                if (i === 4) {
+                    input.style.backgroundColor = 'lightgray';
                 }
-
-                // 동일한 위치의 셀들을 그룹화 (3x3 블록 내의 동일 위치)
-                const groupIndex = `${row % 3}-${col % 3}`;
-                if (!subGoalGroups[groupIndex]) {
-                    subGoalGroups[groupIndex] = [];
-                }
-                subGoalGroups[groupIndex].push(contentDiv);
-
-                // Append cell to container
-                mandarat.appendChild(cell);
+                mandalart.appendChild(input);
             }
-        }
 
-        // 서브 목표 셀 동기화
-        Object.values(subGoalGroups).forEach(group => {
-            group.forEach(element => {
-                element.addEventListener('input', function () {
-                    group.forEach(syncElement => {
-                        if (syncElement !== element) {
-                            syncElement.textContent = element.textContent;
-                        }
-                    });
-                });
+            subMandalartsContainer.appendChild(mandalart);
+
+            // 서브 목표가 변경되면 해당 만다라트의 중앙에 복사
+            subGoal.addEventListener('input', () => {
+                mandalart.children[4].value = subGoal.value;
             });
         });
     </script>
