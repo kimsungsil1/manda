@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mandarat Chart - Complete Synchronization</title>
+    <title>Mandarat Chart with Synchronized Goals</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -63,14 +63,63 @@
 <body>
     <div class="mandarat-container" id="mandarat">
         <!-- 9x9 Grid Cells -->
+        <!-- JavaScript will dynamically generate the cells -->
     </div>
 
     <script>
         // Generate Mandarat Chart
         const mandarat = document.getElementById("mandarat");
 
-        // 객체로 동일한 위치 그룹 저장
-        const subGoalGroups = {
-            "row3-col3": [], // 좌상단, 중앙, 우하단
-            "row3-col5": [], // 우상단, 중앙, 좌하단
-            "
+        // 동일한 위치의 셀들을 그룹화하기 위한 객체
+        const subGoalGroups = {};
+
+        // 9x9 그리드를 생성하고 그룹을 초기화
+        for (let row = 0; row < 9; row++) {
+            for (let col = 0; col < 9; col++) {
+                const cell = document.createElement("div");
+                cell.classList.add("mandarat-cell");
+
+                // Add editable div for better text wrapping and resizing
+                const contentDiv = document.createElement("div");
+                contentDiv.contentEditable = "true";
+                contentDiv.textContent = ""; // 기본 텍스트 제거
+                cell.appendChild(contentDiv);
+
+                // Apply specific styles for main and sub areas
+                if (row === 4 && col === 4) {
+                    cell.classList.add("main"); // 중앙 목표 셀
+                } else if (
+                    (row === 3 || row === 4 || row === 5) &&
+                    (col === 3 || col === 4 || col === 5) &&
+                    !(row === 4 && col === 4)
+                ) {
+                    cell.classList.add("sub"); // 주변 서브 목표
+                }
+
+                // 동일한 위치의 셀들을 그룹화 (3x3 블록 내의 동일 위치)
+                const groupIndex = `${row % 3}-${col % 3}`;
+                if (!subGoalGroups[groupIndex]) {
+                    subGoalGroups[groupIndex] = [];
+                }
+                subGoalGroups[groupIndex].push(contentDiv);
+
+                // Append cell to container
+                mandarat.appendChild(cell);
+            }
+        }
+
+        // 서브 목표 셀 동기화
+        Object.values(subGoalGroups).forEach(group => {
+            group.forEach(element => {
+                element.addEventListener('input', function () {
+                    group.forEach(syncElement => {
+                        if (syncElement !== element) {
+                            syncElement.textContent = element.textContent;
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
