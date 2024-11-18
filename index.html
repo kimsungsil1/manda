@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Mandarat Chart</title>
+    <title>Responsive Mandarat Chart with Central Goal Sync</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -70,6 +70,8 @@
         // Generate Mandarat Chart
         const mandarat = document.getElementById("mandarat");
 
+        let centralGoalDiv;  // 중앙 목표에 대한 참조
+
         for (let row = 0; row < 9; row++) {
             for (let col = 0; col < 9; col++) {
                 const cell = document.createElement("div");
@@ -91,10 +93,24 @@
                 contentDiv.textContent = "Edit"; // Default text
                 cell.appendChild(contentDiv);
 
+                // Track the central goal div
+                if (row === 4 && col === 4) {
+                    centralGoalDiv = contentDiv;
+                }
+
                 // Append cell to container
                 mandarat.appendChild(cell);
             }
         }
+
+        // Add event listener to central goal to synchronize with sub goals
+        centralGoalDiv.addEventListener('input', function () {
+            const subGoals = document.querySelectorAll('.mandarat-cell.sub div');
+            subGoals.forEach(subGoal => {
+                subGoal.textContent = centralGoalDiv.textContent;
+            });
+        });
+
     </script>
 </body>
 </html>
