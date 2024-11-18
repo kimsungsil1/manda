@@ -1,88 +1,100 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>만다라트</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mandal Art Grid</title>
     <style>
         body {
             display: flex;
-            flex-wrap: wrap;
-            width: 900px;
-            margin: 0 auto;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
         }
-        .mandalart {
+
+        .mandal-art-container {
             display: grid;
-            grid-template-columns: repeat(3, 100px);
-            grid-template-rows: repeat(3, 100px);
-            border: 1px solid #000;
-            margin: -1px;
+            grid-template-columns: repeat(3, auto);
+            grid-gap: 20px;
         }
-        .mandalart input {
-            width: 100px;
-            height: 100px;
-            border: 1px solid #000;
-            box-sizing: border-box;
-            text-align: center;
-            font-size: 14px;
+
+        .grid-box {
+            width: 150px;
+            height: 150px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            border: 2px solid #333;
+            background-color: #fff;
         }
-        .main-goal {
-            background-color: yellow;
+
+        .grid-box div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #ccc;
+            font-size: 20px;
+            font-weight: bold;
         }
-        .sub-goal {
-            background-color: lightgray;
+
+        .highlighted {
+            background-color: #f0f0a0;
+        }
+
+        .center-highlight {
+            background-color: #ffff00;
         }
     </style>
 </head>
 <body>
-
-    <!-- 중앙 만다라트 -->
-    <div class="mandalart" id="center-mandalart">
-        <!-- 각 칸 생성 -->
-        <input type="text" class="sub-goal" data-index="0">
-        <input type="text" class="sub-goal" data-index="1">
-        <input type="text" class="sub-goal" data-index="2">
-        <input type="text" class="sub-goal" data-index="3">
-        <input type="text" class="main-goal" id="main-goal">
-        <input type="text" class="sub-goal" data-index="4">
-        <input type="text" class="sub-goal" data-index="5">
-        <input type="text" class="sub-goal" data-index="6">
-        <input type="text" class="sub-goal" data-index="7">
+    <div class="mandal-art-container">
+        <div class="grid-box">
+            <div></div><div></div><div></div>
+            <div></div><div class="highlighted">2</div><div></div>
+            <div></div><div></div><div></div>
+        </div>
+        <div class="grid-box">
+            <div></div><div></div><div></div>
+            <div></div><div class="highlighted">3</div><div></div>
+            <div></div><div></div><div></div>
+        </div>
+        <div class="grid-box">
+            <div></div><div></div><div></div>
+            <div></div><div class="highlighted">4</div><div></div>
+            <div></div><div></div><div></div>
+        </div>
+        <div class="grid-box">
+            <div></div><div></div><div></div>
+            <div class="highlighted">1</div><div></div><div></div>
+            <div></div><div></div><div></div>
+        </div>
+        <div class="grid-box">
+            <div class="highlighted">2</div><div class="highlighted">3</div><div class="highlighted">4</div>
+            <div class="highlighted">1</div><div class="center-highlight">5</div><div class="highlighted">5</div>
+            <div class="highlighted">8</div><div class="highlighted">7</div><div class="highlighted">6</div>
+        </div>
+        <div class="grid-box">
+            <div></div><div></div><div></div>
+            <div></div><div class="highlighted">5</div><div></div>
+            <div></div><div></div><div></div>
+        </div>
+        <div class="grid-box">
+            <div></div><div></div><div></div>
+            <div></div><div class="highlighted">8</div><div></div>
+            <div></div><div></div><div></div>
+        </div>
+        <div class="grid-box">
+            <div></div><div></div><div></div>
+            <div></div><div class="highlighted">7</div><div></div>
+            <div></div><div></div><div></div>
+        </div>
+        <div class="grid-box">
+            <div></div><div></div><div></div>
+            <div></div><div class="highlighted">6</div><div></div>
+            <div></div><div></div><div></div>
+        </div>
     </div>
-
-    <!-- 주변 8개의 만다라트 -->
-    <div id="sub-mandalarts">
-        <!-- 여기서 JavaScript로 만다라트를 생성합니다 -->
-    </div>
-
-    <script>
-        // 중앙 만다라트의 서브 목표를 주변 만다라트에 복사
-        const subGoals = document.querySelectorAll('#center-mandalart .sub-goal');
-        const subMandalartsContainer = document.getElementById('sub-mandalarts');
-
-        subGoals.forEach((subGoal, index) => {
-            // 각 서브 만다라트 생성
-            const mandalart = document.createElement('div');
-            mandalart.className = 'mandalart';
-            mandalart.dataset.index = index;
-
-            // 9칸 생성
-            for (let i = 0; i < 9; i++) {
-                const input = document.createElement('input');
-                input.type = 'text';
-                // 중앙 칸에만 회색 배경 적용
-                if (i === 4) {
-                    input.style.backgroundColor = 'lightgray';
-                }
-                mandalart.appendChild(input);
-            }
-
-            subMandalartsContainer.appendChild(mandalart);
-
-            // 서브 목표가 변경되면 해당 만다라트의 중앙에 복사
-            subGoal.addEventListener('input', () => {
-                mandalart.children[4].value = subGoal.value;
-            });
-        });
-    </script>
 </body>
 </html>
