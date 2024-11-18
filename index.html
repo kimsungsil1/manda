@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Mandarat Chart with Side Goal Sync</title>
+    <title>Mandarat Chart with Synchronized Side Goals</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,7 +28,7 @@
             justify-content: center;
             align-items: center;
             border: 1px solid #ddd;
-            font-size: 12px;
+            font-size: 14px;
             text-align: center;
             padding: 5px;
             word-wrap: break-word;
@@ -46,7 +46,7 @@
             width: 100%;
             height: 100%;
             text-align: center;
-            font-size: 12px;
+            font-size: 14px;
             font-family: inherit;
             overflow: hidden;
             outline: none;
@@ -70,11 +70,13 @@
         // Generate Mandarat Chart
         const mandarat = document.getElementById("mandarat");
 
-        // 배열에 각 서브 목표 셀 그룹의 위치별로 참조를 저장
-        const subGoalCells = [];
+        // 서브 목표 셀 참조를 저장하기 위한 배열
+        const subGoalCells = [
+            [], // Top row cells (4,3), (4,5)
+            [], // Left column cells (3,4), (5,4)
+        ];
 
         for (let row = 0; row < 9; row++) {
-            subGoalCells.push([]);
             for (let col = 0; col < 9; col++) {
                 const cell = document.createElement("div");
                 cell.classList.add("mandarat-cell");
@@ -87,13 +89,17 @@
 
                 // Apply specific styles for main and sub areas
                 if (row === 4 && col === 4) {
-                    cell.classList.add("main"); // Central goal
+                    cell.classList.add("main"); // 중앙 목표 셀
                 } else if (
-                    (row >= 3 && row <= 5 && col >= 3 && col <= 5) &&
-                    !(row === 4 && col === 4)
+                    (row === 4 && (col === 3 || col === 5)) || // 중앙 옆 서브 목표 (좌우)
+                    (col === 4 && (row === 3 || row === 5))    // 중앙 옆 서브 목표 (상하)
                 ) {
-                    cell.classList.add("sub"); // Surrounding sub-goals
-                    subGoalCells[row].push({ col, element: contentDiv });
+                    cell.classList.add("sub"); // 주변 서브 목표
+                    if (col === 3 || col === 5) {
+                        subGoalCells[0].push({ row, col, element: contentDiv }); // Top row cells
+                    } else if (row === 3 || row === 5) {
+                        subGoalCells[1].push({ row, col, element: contentDiv }); // Left column cells
+                    }
                 }
 
                 // Append cell to container
@@ -101,20 +107,18 @@
             }
         }
 
-        // Attach input event listeners to sub-goal cells to synchronize corresponding cells
-        for (let r = 3; r <= 5; r++) {
-            for (const { col, element } of subGoalCells[r]) {
+        // 서브 목표 셀 동기화
+        subGoalCells.forEach((group) => {
+            group.forEach(({ element }) => {
                 element.addEventListener('input', function () {
-                    for (let syncRow = 3; syncRow <= 5; syncRow++) {
-                        for (const { col: syncCol, element: syncElement } of subGoalCells[syncRow]) {
-                            if (syncRow !== r && syncCol === col) {
-                                syncElement.textContent = element.textContent;
-                            }
+                    group.forEach(({ element: syncElement }) => {
+                        if (syncElement !== element) {
+                            syncElement.textContent = element.textContent;
                         }
-                    }
+                    });
                 });
-            }
-        }
+            });
+        });
     </script>
 </body>
 </html>
