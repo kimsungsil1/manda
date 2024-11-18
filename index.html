@@ -63,20 +63,14 @@
 <body>
     <div class="mandarat-container" id="mandarat">
         <!-- 9x9 Grid Cells -->
-        <!-- JavaScript will dynamically generate the cells -->
     </div>
 
     <script>
         // Generate Mandarat Chart
         const mandarat = document.getElementById("mandarat");
 
-        // 서브 목표 셀 참조를 저장하기 위한 객체 (동일 위치 그룹화)
+        // 객체로 동일한 위치 그룹 저장
         const subGoalGroups = {
-            "1-3": [], // Column 3 (1,3), (4,3), (7,3)
-            "3-1": [], // Row 3 (3,1), (3,4), (3,7)
-            "1-5": [], // Column 5 (1,5), (4,5), (7,5)
-            "5-1": [], // Row 5 (5,1), (5,4), (5,7)
-        };
-
-        // 9x9 그리드 생성
-        for (let row = 0; row <
+            "row3-col3": [], // 좌상단, 중앙, 우하단
+            "row3-col5": [], // 우상단, 중앙, 좌하단
+            "
