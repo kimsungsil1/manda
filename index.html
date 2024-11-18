@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mandarat Chart</title>
+    <title>Responsive Mandarat Chart</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -19,8 +19,9 @@
             grid-template-columns: repeat(9, 1fr);
             grid-gap: 1px;
             background-color: #000;
-            width: 450px;
-            height: 450px;
+            width: 90%;
+            max-width: 600px;
+            aspect-ratio: 1; /* 정사각형 유지 */
         }
         .mandarat-cell {
             background-color: white;
@@ -31,6 +32,15 @@
             font-size: 12px;
             text-align: center;
             overflow: hidden;
+            padding: 5px; /* 내부 여백 */
+            word-wrap: break-word; /* 줄 바꿈 활성화 */
+        }
+        .mandarat-cell.main {
+            background-color: yellow;
+            font-weight: bold;
+        }
+        .mandarat-cell.sub {
+            background-color: #e0e0e0;
         }
         .mandarat-cell input {
             width: 100%;
@@ -41,13 +51,8 @@
             font-family: inherit;
             background: none;
             outline: none;
-        }
-        .mandarat-cell.main {
-            background-color: yellow;
-            font-weight: bold;
-        }
-        .mandarat-cell.sub {
-            background-color: #e0e0e0;
+            resize: none; /* 크기 조정 방지 */
+            overflow: hidden;
         }
     </style>
 </head>
@@ -76,11 +81,10 @@
                     cell.classList.add("sub"); // Surrounding sub-goals
                 }
 
-                // Add input field
-                const input = document.createElement("input");
-                input.type = "text";
-                input.placeholder = "Edit";
-                cell.appendChild(input);
+                // Add textarea for better text wrapping
+                const textarea = document.createElement("textarea");
+                textarea.placeholder = "Edit";
+                cell.appendChild(textarea);
 
                 // Append cell to container
                 mandarat.appendChild(cell);
