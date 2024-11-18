@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mandarat Chart - Exact Synchronization</title>
+    <title>Complete Mandarat Chart Synchronization</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -70,14 +70,10 @@
         // Generate Mandarat Chart
         const mandarat = document.getElementById("mandarat");
 
-        // 서브 목표 셀 참조를 저장하기 위한 객체
-        const subGoalGroups = {
-            "group1": [], // 중앙 왼쪽 세로 그룹 (1, 3), (4, 3), (7, 3)
-            "group2": [], // 중앙 상단 가로 그룹 (3, 1), (3, 4), (3, 7)
-            "group3": [], // 중앙 오른쪽 세로 그룹 (1, 5), (4, 5), (7, 5)
-            "group4": [], // 중앙 하단 가로 그룹 (5, 1), (5, 4), (5, 7)
-        };
+        // 서브 목표 셀 참조를 저장하기 위한 객체 (81칸 전체 관리)
+        const subGoalGroups = {};
 
+        // Create 9x9 grid and initialize subGoalGroups for synchronization
         for (let row = 0; row < 9; row++) {
             for (let col = 0; col < 9; col++) {
                 const cell = document.createElement("div");
@@ -92,23 +88,21 @@
                 // Apply specific styles for main and sub areas
                 if (row === 4 && col === 4) {
                     cell.classList.add("main"); // 중앙 목표 셀
-                } else if (row === 1 && col === 3 || row === 4 && col === 3 || row === 7 && col === 3) {
-                    // 중앙 왼쪽 세로 그룹
+                } else if (
+                    (row === 3 || row === 4 || row === 5) &&
+                    (col === 3 || col === 4 || col === 5) &&
+                    !(row === 4 && col === 4)
+                ) {
+                    // 주변 서브 목표
                     cell.classList.add("sub");
-                    subGoalGroups.group1.push(contentDiv);
-                } else if (row === 3 && col === 1 || row === 3 && col === 4 || row === 3 && col === 7) {
-                    // 중앙 상단 가로 그룹
-                    cell.classList.add("sub");
-                    subGoalGroups.group2.push(contentDiv);
-                } else if (row === 1 && col === 5 || row === 4 && col === 5 || row === 7 && col === 5) {
-                    // 중앙 오른쪽 세로 그룹
-                    cell.classList.add("sub");
-                    subGoalGroups.group3.push(contentDiv);
-                } else if (row === 5 && col === 1 || row === 5 && col === 4 || row === 5 && col === 7) {
-                    // 중앙 하단 가로 그룹
-                    cell.classList.add("sub");
-                    subGoalGroups.group4.push(contentDiv);
                 }
+
+                // Group cells by their respective 3x3 sub-chart index for synchronization
+                const groupIndex = `${Math.floor(row / 3)}-${Math.floor(col / 3)}`;
+                if (!subGoalGroups[groupIndex]) {
+                    subGoalGroups[groupIndex] = [];
+                }
+                subGoalGroups[groupIndex].push(contentDiv);
 
                 // Append cell to container
                 mandarat.appendChild(cell);
